@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+    <title>Document</title>
+    <style>
+        html,body {
+            height: 100%;
+            margin: 0;
+        }
+        #map {
+            width: 80%;
+            height: 100%;
+            float: right;
+        }
+        #sideBar {
+            width: 20%;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="map">
+    </div>
+    <div id="sideBar">
+        <input type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+        <ul data-bind="foreach: filteredItems">
+            <li>
+                <span data-bind="text: title, click: $parent.populateInfoWindow"></span>
+            </li>
+        </ul>
+    </div>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA31O7vYe_kpWJvckidd0hP4YblhPqOszM&v=3&callback=initMap" onerror="mapError()">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
