@@ -7,12 +7,6 @@ var markers = [];
 function AppViewModel(locations) {
     var self = this;
 
-    self.createMarkers = function(locations) {
-        createMarkers(locations);
-    };
-
-    self.createMarkers(locations);
-
     self.markers = ko.observableArray(markers);
 
     //called when list item is cliked
@@ -28,16 +22,23 @@ function AppViewModel(locations) {
     self.filteredItems = ko.dependentObservable(function() {
         var filter = self.filter().toLowerCase();
         if (!filter) {
+            //makes sure markers are empty
+            deleteMarkers();
+            //creates markers for each location
+            for (i = 0; i < locations.length; i++) {
+                addMarker(locations[i]);
+            }
             return markers;
         } else {
-            return ko.utils.arrayFilter(locations, function(location) {
-                // if (ko.utils.stringStartsWith(location.title.toLowerCase(), filter)) {
-                //     clearMarkers();
-                //     markers.push(marker);
-                //     console.log(markers);
-                //     createMarkers(locations);
-                // }
-                return ko.utils.stringStartsWith(location.title.toLowerCase(), filter);
+            return ko.utils.arrayFilter(markers, function(marker) {
+                if (ko.utils.stringStartsWith(marker.title.toLowerCase(), filter)) {
+                    //clears markers
+                    deleteMarkers();
+                    //adds the filtered marker
+                    markers.push(marker);
+                    showMarkers();
+                    return marker;
+                }
             });
         }
 
@@ -60,31 +61,31 @@ function initMap() {
     //hardcoded locations
     var locations = [{
         title: "Golden Gate Bridge",
-        location: {
+        position: {
             lat: 37.8199,
             lng: -122.4783
         }
     }, {
         title: "Union Square",
-        location: {
+        position: {
             lat: 37.7880,
             lng: -122.4074
         }
     }, {
         title: "Chinatown",
-        location: {
+        position: {
             lat: 37.7941,
             lng: -122.4078
         }
     }, {
         title: "AT&T Park",
-        location: {
+        position: {
             lat: 37.7786,
             lng: -122.3893
         }
     }, {
         title: "Cable Car System",
-        location: {
+        position: {
             lat: 37.7907,
             lng: -122.4188
         }
@@ -93,39 +94,60 @@ function initMap() {
     ko.applyBindings(new AppViewModel(locations));
 }
 
-//Creates markers based of locations array
-var createMarkers = function(locations) {
-    for (i = 0; i < locations.length; i++) {
-        var marker = new google.maps.Marker({
-            position: {
-                lat: locations[i].location.lat,
-                lng: locations[i].location.lng
-            },
-            map: map,
-            title: locations[i].title,
-            animation: google.maps.Animation.DROP,
+// Adds a marker to the map and push to the array.
+function addMarker(location) {
+    var marker = new google.maps.Marker({
+        position: {
+            lat: location.position.lat,
+            lng: location.position.lng
+        },
+        map: map,
+        title: location.title,
+        animation: google.maps.Animation.DROP,
+        populateInfoWindow: populateInfoWindow,
 
-            populateInfoWindow: populateInfoWindow,
-
-            //bounce animation for marker
-            toggleBounce: function() {
-                if (this.getAnimation() !== null) {
-                    this.setAnimation(null);
-                } else {
-                    this.setAnimation(google.maps.Animation.BOUNCE);
-                }
+        toggleBounce: function() {
+            if (this.getAnimation() !== null) {
+                this.setAnimation(null);
+            } else {
+                this.setAnimation(google.maps.Animation.BOUNCE);
             }
+        }
 
-        });
-        markers.push(marker);
-        marker.addListener('click', function() {
-            //populateInfoWindow(this, InfoWindow);
-            this.toggleBounce();
-            this.populateInfoWindow(this, InfoWindow);
-        });
-        bounds.extend(markers[i].position);
+    });
+    marker.addListener('click', function() {
+        //populateInfoWindow(this, InfoWindow);
+        this.toggleBounce();
+        this.populateInfoWindow(this, InfoWindow);
+    });
+    markers.push(marker);
+    bounds.extend(marker.position);
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
     }
-};
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setMapOnAll(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+}
+
+//bounds.extend(markers[i].position);
 
 //Infowindow for markers
 function populateInfoWindow(marker, infowindow) {
