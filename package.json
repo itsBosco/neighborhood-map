@@ -1,0 +1,19 @@
+{
+  "name": "neighborhood-map",
+  "version": "1.0.0",
+  "description": "Project 5 for the Udacity Front End Nanodegree",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsBosco/neighborhood-map.git"
+  },
+  "author": "Zahier Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itsBosco/neighborhood-map/issues"
+  },
+  "homepage": "https://github.com/itsBosco/neighborhood-map#readme"
+}

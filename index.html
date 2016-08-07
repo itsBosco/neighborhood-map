@@ -5,31 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-        html,body {
-            height: 100%;
-            margin: 0;
-        }
-        #map {
-            width: 80%;
-            height: 100%;
-            float: right;
-        }
-        #sideBar {
-            width: 20%;
-            float: left;
-        }
-        .infowindow img{
-            width: 100px;
-            height: 100px;
-        }
-    </style>
+    <link rel="stylesheet" href="dist/css/style.min.css">
 </head>
 <body>
     <div id="map">
     </div>
-    <div id="sideBar">
-        <input type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+    <div class="sideBar">
+        <input type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Filter">
         <ul data-bind="foreach: filteredItems">
             <li>
                 <span data-bind="text: title, click: $parent.populateInfoWindow"></span>
@@ -42,6 +24,6 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
     <script async   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
-    <script src="js/app.js"></script>
+    <script src="dist/js/app.min.js"></script>
 </body>
 </html>

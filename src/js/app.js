@@ -4,36 +4,54 @@ var flickr_api_key = 'c409285ba83e15950d72eddb6f85a5ec';
 var markers = [];
 //hardcoded locations
 var locations = [{
-    title: "Golden Gate Bridge",
+    title: "World of Coca-Cola",
     position: {
-        lat: 37.8199,
-        lng: -122.4783
+        lat: 33.7628,
+        lng: -84.3928
     }
 }, {
-    title: "Union Square",
+    title: "Centennial Olympic Park",
     position: {
-        lat: 37.7880,
-        lng: -122.4074
+        lat: 33.7608,
+        lng: -84.3931
     }
 }, {
-    title: "Chinatown",
+    title: "Six Flags",
     position: {
-        lat: 37.7941,
-        lng: -122.4078
+        lat: 33.7681,
+        lng: -84.5513
     }
 }, {
-    title: "AT&T Park",
+    title: "Fox Theatre",
     position: {
-        lat: 37.7786,
-        lng: -122.3893
+        lat: 33.7726,
+        lng: -84.3856
     }
 }, {
-    title: "Cable Car System",
+    title: "Turner Field",
     position: {
-        lat: 37.7907,
-        lng: -122.4188
+        lat: 33.7348,
+        lng: -84.3900
     }
-}, ];
+}, {
+    title: "Philips Arena",
+    position: {
+        lat: 33.7573,
+        lng: -84.3963
+    }
+}, {
+    title: "Georgia Dome",
+    position: {
+        lat: 33.7577,
+        lng: -84.4008
+    }
+}, {
+    title: "Zoo Atlanta",
+    position: {
+        lat: 33.7322,
+        lng: -84.3713
+    }
+}];
 
 
 //VIEWMODEL
@@ -81,10 +99,10 @@ function AppViewModel(locations) {
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
-            lat: 37.7749,
-            lng: -122.4194
+            lat: 33.7490,
+            lng: -84.3880
         },
-        zoom: 13
+        zoom: 14
     });
     InfoWindow = new google.maps.InfoWindow();
     bounds = new google.maps.LatLngBounds();
@@ -109,12 +127,12 @@ function addMarker(location) {
             var marker = this;
             $.ajax({
                 url: ' https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' +
-                    flickr_api_key + '&per_page=50&radius=0.5&lat=' + location.position.lat +
+                    flickr_api_key + '&per_page=50&radius=0.1&lat=' + location.position.lat +
                     '&lon=' + location.position.lng + '&format=json&nojsoncallback=1',
                 dataType: 'json',
 
                 success: function jsonFlickrApi(response) {
-                    var photoData = response.photos.photo[2];
+                    var photoData = response.photos.photo[0];
                     var farm = photoData.farm;
                     var photoID = photoData.id;
                     var secretID = photoData.secret;
