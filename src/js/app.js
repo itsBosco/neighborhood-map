@@ -1,6 +1,6 @@
 /*jshint loopfunc: true */
-var map, bounds, InfoWindow, locations;
-var flickr_api_key = 'c409285ba83e15950d72eddb6f85a5ec';
+var map, bounds, infoWindow, locations;
+var FLICKR_API_KEY = 'c409285ba83e15950d72eddb6f85a5ec';
 var markers = [];
 //hardcoded locations
 var locations = [{
@@ -66,10 +66,10 @@ function AppViewModel(locations) {
         this.toggleBounce();
     };
 
-    self.filter = ko.observable("");
+    self.filter = ko.observable('');
 
     //Takes items from the markers array and filters them based of the text in the filter
-    self.filteredItems = ko.dependentObservable(function() {
+    self.filteredItems = ko.computed(function() {
         var filter = self.filter().toLowerCase();
         if (!filter) {
             // for the initial marker population
@@ -108,7 +108,7 @@ function initMap() {
         },
         zoom: 14
     });
-    InfoWindow = new google.maps.InfoWindow();
+    infoWindow = new google.maps.InfoWindow();
     bounds = new google.maps.LatLngBounds();
 
     ko.applyBindings(new AppViewModel(locations));
@@ -129,29 +129,24 @@ function addMarker(location) {
         //gets flikr image
         getImage: function() {
             var marker = this;
-            $.ajax({
-                url: ' https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' +
-                    flickr_api_key + '&per_page=50&radius=0.1&lat=' + location.position.lat +
-                    '&lon=' + location.position.lng + '&format=json&nojsoncallback=1',
-                dataType: 'json',
-
-                success: function jsonFlickrApi(response) {
-                    var photoData = response.photos.photo[0];
-                    var farm = photoData.farm;
-                    var photoID = photoData.id;
-                    var secretID = photoData.secret;
-                    var server = photoData.server;
-                    //sets marker image as the results from the flickr api
-                    setImage(marker, '<img src=https://farm' + farm + '.staticflickr.com/' +
-                        server + '/' + photoID + '_' + secretID + '.jpg');
-                },
-
-                error: function(e) {
-                    setImage(marker, '<h1>Failed to get image</h1>');
-                }
+            fetch(' https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' +
+                FLICKR_API_KEY + '&per_page=1&radius=0.1&lat=' + location.position.lat +
+                '&lon=' + location.position.lng + '&format=json&nojsoncallback=1').then(function(response) {
+                return response.json();
+            }).then(function(j) {
+                var photoData = j.photos.photo[0];
+                var farm = photoData.farm;
+                var photoID = photoData.id;
+                var secretID = photoData.secret;
+                var server = photoData.server;
+                //sets marker image as the results from the flickr api
+                setImage(marker, '<img src=https://farm' + farm + '.staticflickr.com/' +
+                    server + '/' + photoID + '_' + secretID + '.jpg');
+            }).catch(function(err) {
+                setImage(marker, '<h1>Failed to get image</h1>');
             });
-
         },
+
         //changes marker to bouncing when it is clicked
         toggleBounce: function() {
             //makes sure that more than one marker is bouncing at a time
@@ -169,19 +164,20 @@ function addMarker(location) {
     marker.getImage();
     marker.addListener('click', function() {
         this.toggleBounce();
-        this.populateInfoWindow(this, InfoWindow);
+        this.populateInfoWindow(this, infoWindow);
     });
     markers.push(marker);
     bounds.extend(marker.position);
+    map.fitBounds(bounds);
 }
 
 //Infowindow for markers
-function populateInfoWindow(marker, infowindow) {
-    infowindow.marker = marker;
-    infowindow.setContent('<div class="infowindow">' + '<h1>' + marker.title + '</h1>' + '<br>' + marker.image + '<br>' + '<p>Recent flickr upload of ' + marker.title + '</p>' + '</div>');
-    infowindow.open(map, marker);
+function populateInfoWindow(marker, infoWindow) {
+    infoWindow.marker = marker;
+    infoWindow.setContent('<div class="infowindow">' + '<h1>' + marker.title + '</h1>' + '<br>' + marker.image + '<br>' + '<p>Recent flickr upload of ' + marker.title + '</p>' + '</div>');
+    infoWindow.open(map, marker);
     //stops bouncing when user closes infowindow
-    infowindow.addListener('closeclick', function() {
+    infoWindow.addListener('closeclick', function() {
         marker.setAnimation(null);
     });
 }
@@ -204,4 +200,9 @@ ko.utils.stringStartsWith = function(string, startsWith) {
     if (startsWith.length > string.length)
         return false;
     return string.substring(0, startsWith.length) === startsWith;
+};
+
+//fits markers on map when window is resized
+window.onresize = function() {
+    map.fitBounds(bounds);
 };

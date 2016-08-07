@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                     'dist/js/app.min.js': ['src/js/app.js']
                 }
             }
-        }
+        }, //end of uglify
     });
 
     //load task(s)

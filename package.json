@@ -15,5 +15,7 @@
   "bugs": {
     "url": "https://github.com/itsBosco/neighborhood-map/issues"
   },
-  "homepage": "https://github.com/itsBosco/neighborhood-map#readme"
+  "homepage": "https://github.com/itsBosco/neighborhood-map#readme",
+  "devDependencies": {
+  }
 }

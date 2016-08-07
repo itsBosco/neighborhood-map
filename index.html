@@ -8,20 +8,19 @@
     <link rel="stylesheet" href="dist/css/style.min.css">
 </head>
 <body>
-    <div id="map">
-    </div>
-    <div class="sideBar">
+    <main id="map">
+    </main>
+    <aside class="side-bar">
         <input type="text" data-bind="textInput: filter, valueUpdate: 'afterkeydown'" placeholder="Filter">
         <ul data-bind="foreach: filteredItems">
             <li>
                 <span data-bind="text: title, click: $parent.populateInfoWindow"></span>
             </li>
         </ul>
-    </div>
+    </aside>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
     <script src="dist/js/app.min.js"></script>
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA31O7vYe_kpWJvckidd0hP4YblhPqOszM&v=3&callback=initMap" onerror="mapError()">
