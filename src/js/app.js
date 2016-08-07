@@ -4,49 +4,49 @@ var flickr_api_key = 'c409285ba83e15950d72eddb6f85a5ec';
 var markers = [];
 //hardcoded locations
 var locations = [{
-    title: "World of Coca-Cola",
+    title: 'World of Coca-Cola',
     position: {
         lat: 33.7628,
         lng: -84.3928
     }
 }, {
-    title: "Centennial Olympic Park",
+    title: 'Centennial Olympic Park',
     position: {
         lat: 33.7608,
         lng: -84.3931
     }
 }, {
-    title: "Six Flags",
+    title: 'Six Flags',
     position: {
         lat: 33.7681,
         lng: -84.5513
     }
 }, {
-    title: "Fox Theatre",
+    title: 'Fox Theatre',
     position: {
         lat: 33.7726,
         lng: -84.3856
     }
 }, {
-    title: "Turner Field",
+    title: 'Turner Field',
     position: {
         lat: 33.7348,
         lng: -84.3900
     }
 }, {
-    title: "Philips Arena",
+    title: 'Philips Arena',
     position: {
         lat: 33.7573,
         lng: -84.3963
     }
 }, {
-    title: "Georgia Dome",
+    title: 'Georgia Dome',
     position: {
         lat: 33.7577,
         lng: -84.4008
     }
 }, {
-    title: "Zoo Atlanta",
+    title: 'Zoo Atlanta',
     position: {
         lat: 33.7322,
         lng: -84.3713
@@ -72,22 +72,26 @@ function AppViewModel(locations) {
     self.filteredItems = ko.dependentObservable(function() {
         var filter = self.filter().toLowerCase();
         if (!filter) {
-            //makes sure markers are empty
-            deleteMarkers();
-            //creates markers for each location
-            for (i = 0; i < locations.length; i++) {
-                addMarker(locations[i]);
+            // for the initial marker population
+            if (!markers.length) {
+                for (i = 0; i < locations.length; i++) {
+                    addMarker(locations[i]);
+                }
             }
+
+            // return the entire marker list
+            markers.forEach(function(marker) {
+                // and set each marker visible
+                marker.setVisible(true);
+            });
             return markers;
         } else {
             return ko.utils.arrayFilter(markers, function(marker) {
                 if (ko.utils.stringStartsWith(marker.title.toLowerCase(), filter)) {
-                    //clears markers
-                    deleteMarkers();
-                    //adds the filtered marker
-                    markers.push(marker);
-                    showMarkers();
+                    marker.setVisible(true);
                     return marker;
+                } else {
+                    marker.setVisible(false);
                 }
             });
         }
@@ -169,29 +173,6 @@ function addMarker(location) {
     });
     markers.push(marker);
     bounds.extend(marker.position);
-}
-
-// Sets the map on all markers in the array.
-function setMapOnAll(map) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-    }
-}
-
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-    setMapOnAll(null);
-}
-
-// Shows any markers currently in the array.
-function showMarkers() {
-    setMapOnAll(map);
-}
-
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
-    clearMarkers();
-    markers = [];
 }
 
 //Infowindow for markers
