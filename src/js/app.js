@@ -62,7 +62,7 @@ function AppViewModel(locations) {
 
     //called when list item is cliked
     self.populateInfoWindow = function() {
-        populateInfoWindow(this, InfoWindow);
+        populateInfoWindow(this, infoWindow);
         this.toggleBounce();
     };
 
